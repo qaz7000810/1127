@@ -78,8 +78,6 @@ data = load_data()
 if not data.empty:
     try:
         midpoint = mpoint(data["緯度"], data["経度"])
-        st.title("Public Wireless LAN Data")
-        st.write("Examining the geographic distribution of Public Wireless LAN Data.")
         map(data, midpoint[0], midpoint[1], 11)
     except Exception as e:
         st.write(f"Error in main application: {e}")
