@@ -33,16 +33,21 @@ def load_data():
     if not os.path.isfile(path):
         path = f"https://github.com/qaz7000810/tower/raw/refs/heads/main/130001_public_wireless_lan_20240901.csv"
 
-    data = pd.read_csv(
-        path,
-        names=["緯度", "経度"],
-        encoding="utf-8",  # 指定編碼
-        errors='ignore'  # 忽略編碼錯誤
-    )
-    return data
+    try:
+        data = pd.read_csv(
+            path,
+            usecols=["緯度", "経度"],  # 只讀取需要的欄位
+            encoding="utf-8",  # 指定編碼
+            errors='ignore'  # 忽略編碼錯誤
+        )
+        st.write("Data loaded successfully")
+        return data
+    except Exception as e:
+        st.write(f"Error loading data: {e}")
+        return pd.DataFrame(columns=["緯度", "経度"])
 
 
-# FUNCTION FOR AIRPORT MAPS
+# FUNCTION FOR MAP
 def map(data, lat, lon, zoom):
     st.write(
         pdk.Deck(
