@@ -70,10 +70,10 @@ data = load_data()
 if not data.empty:
     try:
         midpoint = mpoint(data["緯度"], data["経度"])
-        st.title("Public Wireless LAN Data")
+        st.title("東京都免費無線網路")
         st.write(
             """
-            Examining the geographic distribution of Public Wireless LAN Data.
+            東京都中，免費無線網路之面量圖。
             """
         )
         map(data, midpoint[0], midpoint[1], 11)
