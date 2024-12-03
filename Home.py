@@ -1,40 +1,81 @@
+import os
+import numpy as np
+import pandas as pd
+import pydeck as pdk
 import streamlit as st
-import leafmap.foliumap as leafmap
 
-st.set_page_config(layout="wide")
+# 設置頁面配置
+st.set_page_config(layout="wide", page_title="Public Wireless LAN Data", page_icon=":globe_with_meridians:")
 
-# Customize the sidebar
-markdown = """
-A Streamlit map template
-<https://github.com/opengeos/streamlit-map-template>
-"""
+# 加載數據
+@st.cache_resource
+def load_data():
+    path = "130001_public_wireless_lan_20240901.csv"
+    if not os.path.isfile(path):
+        path = f"https://github.com/qaz7000810/tower/raw/refs/heads/main/130001_public_wireless_lan_20240901.csv"
 
-st.sidebar.title("About")
-st.sidebar.info(markdown)
-logo = "https://i.imgur.com/UbOXYAU.png"
-st.sidebar.image(logo)
+    try:
+        data = pd.read_csv(
+            path,
+            usecols=[9, 10],  # 使用列索引來讀取第10和第11列
+            encoding="iso-8859-1"  # 使用成功的編碼
+        )
+        data.columns = ["緯度", "経度"]  # 手動指定列名
+        data["緯度"] = pd.to_numeric(data["緯度"], errors='coerce')  # 將緯度轉換為數字
+        data["経度"] = pd.to_numeric(data["経度"], errors='coerce')  # 將経度轉換為數字
+        data.dropna(subset=["緯度", "経度"], inplace=True)  # 丟棄包含 NaN 的行
+        return data
+    except Exception as e:
+        st.write(f"Error loading data: {e}")
+        return pd.DataFrame(columns=["緯度", "経度"])
 
-# Customize page title
-st.title("Streamlit for Geospatial Applications")
+# 繪製地圖函數
+def map(data, lat, lon, zoom):
+    try:
+        st.write(
+            pdk.Deck(
+                map_style="mapbox://styles/mapbox/light-v9",
+                initial_view_state={
+                    "latitude": lat,
+                    "longitude": lon,
+                    "zoom": zoom,
+                    "pitch": 50,
+                },
+                layers=[
+                    pdk.Layer(
+                        "HexagonLayer",
+                        data=data,
+                        get_position=["経度", "緯度"],
+                        radius=100,
+                        elevation_scale=4,
+                        elevation_range=[0, 1000],
+                        pickable=True,
+                        extruded=True,
+                    ),
+                ],
+            )
+        )
+    except Exception as e:
+        st.write(f"Error displaying map: {e}")
 
-st.markdown(
-    """
-    This multipage app template demonstrates various interactive web apps created using [streamlit](https://streamlit.io) and [leafmap](https://leafmap.org). It is an open-source project and you are very welcome to contribute to the [GitHub repository](https://github.com/opengeos/streamlit-map-template).
-    """
-)
+# 計算中點
+@st.cache_data
+def mpoint(lat, lon):
+    return (np.average(lat), np.average(lon))
 
-st.header("Instructions")
+# 主應用程序
+data = load_data()
 
-markdown = """
-1. For the [GitHub repository](https://github.com/opengeos/streamlit-map-template) or [use it as a template](https://github.com/opengeos/streamlit-map-template/generate) for your own project.
-2. Customize the sidebar by changing the sidebar text and logo in each Python files.
-3. Find your favorite emoji from https://emojipedia.org.
-4. Add a new app to the `pages/` directory with an emoji in the file name, e.g., `1_🚀_Chart.py`.
-
-"""
-
-st.markdown(markdown)
-
-m = leafmap.Map(minimap_control=True)
-m.add_basemap("OpenTopoMap")
-m.to_streamlit(height=500)
+# 設置地圖縮放位置
+if not data.empty:
+    try:
+        midpoint = mpoint(data["緯度"], data["経度"])
+        st.title("Public Wireless LAN Data")
+        st.write(
+            """
+            Examining the geographic distribution of Public Wireless LAN Data.
+            """
+        )
+        map(data, midpoint[0], midpoint[1], 11)
+    except Exception as e:
+        st.write(f"Error in main application: {e}")
