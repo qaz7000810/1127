@@ -40,6 +40,7 @@ def load_data():
         data.columns = ["緯度", "経度"]  # 手動指定列名
         data["緯度"] = pd.to_numeric(data["緯度"], errors='coerce')  # 將緯度轉換為數字
         data["経度"] = pd.to_numeric(data["経度"], errors='coerce')  # 將経度轉換為數字
+        data.dropna(subset=["緯度", "経度"], inplace=True)  # 丟棄包含 NaN 的行
         st.write("Data loaded successfully")
         return data
     except Exception as e:
