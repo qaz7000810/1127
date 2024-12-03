@@ -25,7 +25,9 @@ def load_data():
         data["経度"] = pd.to_numeric(data["経度"], errors='coerce')  # 將経度轉換為數字
         data.dropna(subset=["緯度", "経度"], inplace=True)  # 丟棄包含 NaN 的行
         st.write("Data loaded successfully")
+        st.write("Data preview:")
         st.write(data.head())  # 顯示數據前幾行以進行調試
+        st.write(f"Data size: {data.shape}")  # 顯示數據的大小
         return data
     except Exception as e:
         st.write(f"Error loading data: {e}")
