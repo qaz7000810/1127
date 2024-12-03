@@ -5,7 +5,7 @@ import pydeck as pdk
 import streamlit as st
 
 # 設置頁面配置
-st.set_page_config(layout="wide", page_title="Public Wireless LAN Data", page_icon=":globe_with_meridians:")
+st.set_page_config(layout="wide", page_title="東京都免費無線網路分布", page_icon=":globe_with_meridians:")
 
 # 加載數據
 @st.cache_resource
