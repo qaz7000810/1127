@@ -20,7 +20,7 @@ def load_data():
         try:
             data = pd.read_csv(
                 path,
-                usecols=[2, 3],  # 使用列索引來讀取第三和第四列
+                usecols=[9, 10],  # 使用列索引來讀取第10和第11列
                 encoding=enc  # 嘗試不同的編碼
             )
             data.columns = ["緯度", "経度"]  # 手動指定列名
@@ -74,3 +74,12 @@ def mpoint(lat, lon):
 # 主應用程序
 data = load_data()
 
+# 設置地圖縮放位置
+if not data.empty:
+    try:
+        midpoint = mpoint(data["緯度"], data["経度"])
+        st.title("Public Wireless LAN Data")
+        st.write("Examining the geographic distribution of Public Wireless LAN Data.")
+        map(data, midpoint[0], midpoint[1], 11)
+    except Exception as e:
+        st.write(f"Error in main application: {e}")
