@@ -35,7 +35,7 @@ def load_data():
         data = pd.read_csv(
             path,
             usecols=["緯度", "経度"],  # 只讀取需要的欄位
-            encoding="utf-8"  # 指定編碼
+            encoding="iso-8859-1"  # 指定編碼
         )
         st.write("Data loaded successfully")
         return data
