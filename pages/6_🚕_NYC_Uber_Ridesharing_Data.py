@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2022 Streamlit Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""An example of showing geographic data."""
+
 import os
 import numpy as np
 import pandas as pd
@@ -15,17 +32,17 @@ def load_data():
         path = f"https://github.com/qaz7000810/tower/raw/refs/heads/main/130001_public_wireless_lan_20240901.csv"
 
     try:
-        # 先讀取整個 CSV 文件
         data = pd.read_csv(
             path,
+            usecols=[2, 3],  # 使用列索引來讀取第三和第四列
             encoding="iso-8859-1"  # 指定編碼
         )
+        data.columns = ["緯度", "経度"]  # 手動指定列名
         st.write("Data loaded successfully")
-        st.write("Columns in the dataset:", data.columns.tolist())  # 顯示數據集中的列名稱
         return data
     except Exception as e:
         st.write(f"Error loading data: {e}")
-        return pd.DataFrame()
+        return pd.DataFrame(columns=["緯度", "経度"])
 
 # FUNCTION FOR MAP
 def map(data, lat, lon, zoom):
