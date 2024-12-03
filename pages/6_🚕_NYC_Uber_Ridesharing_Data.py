@@ -14,24 +14,28 @@ def load_data():
     if not os.path.isfile(path):
         path = f"https://github.com/qaz7000810/tower/raw/refs/heads/main/130001_public_wireless_lan_20240901.csv"
 
-    try:
-        data = pd.read_csv(
-            path,
-            usecols=[2, 3],  # 使用列索引來讀取第三和第四列
-            encoding="iso-8859-1"  # 指定編碼
-        )
-        data.columns = ["緯度", "経度"]  # 手動指定列名
-        data["緯度"] = pd.to_numeric(data["緯度"], errors='coerce')  # 將緯度轉換為數字
-        data["経度"] = pd.to_numeric(data["経度"], errors='coerce')  # 將経度轉換為數字
-        data.dropna(subset=["緯度", "経度"], inplace=True)  # 丟棄包含 NaN 的行
-        st.write("Data loaded successfully")
-        st.write("Data preview:")
-        st.write(data.head())  # 顯示數據前幾行以進行調試
-        st.write(f"Data size: {data.shape}")  # 顯示數據的大小
-        return data
-    except Exception as e:
-        st.write(f"Error loading data: {e}")
-        return pd.DataFrame(columns=["緯度", "経度"])
+    encodings = ['utf-8', 'iso-8859-1', 'latin1']
+    
+    for enc in encodings:
+        try:
+            data = pd.read_csv(
+                path,
+                usecols=[2, 3],  # 使用列索引來讀取第三和第四列
+                encoding=enc  # 嘗試不同的編碼
+            )
+            data.columns = ["緯度", "経度"]  # 手動指定列名
+            data["緯度"] = pd.to_numeric(data["緯度"], errors='coerce')  # 將緯度轉換為數字
+            data["経度"] = pd.to_numeric(data["経度"], errors='coerce')  # 將経度轉換為數字
+            data.dropna(subset=["緯度", "経度"], inplace=True)  # 丟棄包含 NaN 的行
+            st.write(f"Data loaded successfully with encoding {enc}")
+            st.write("Data preview:")
+            st.write(data.head())  # 顯示數據前幾行以進行調試
+            st.write(f"Data size: {data.shape}")  # 顯示數據的大小
+            return data
+        except Exception as e:
+            st.write(f"Error loading data with encoding {enc}: {e}")
+
+    return pd.DataFrame(columns=["緯度", "経度"])
 
 # 繪製地圖函數
 def map(data, lat, lon, zoom):
@@ -70,12 +74,3 @@ def mpoint(lat, lon):
 # 主應用程序
 data = load_data()
 
-# 設置地圖縮放位置
-if not data.empty:
-    try:
-        midpoint = mpoint(data["緯度"], data["経度"])
-        st.title("Public Wireless LAN Data")
-        st.write("Examining the geographic distribution of Public Wireless LAN Data.")
-        map(data, midpoint[0], midpoint[1], 11)
-    except Exception as e:
-        st.write(f"Error in main application: {e}")
