@@ -16,7 +16,6 @@
 """An example of showing geographic data."""
 
 import os
-
 import numpy as np
 import pandas as pd
 import pydeck as pdk
@@ -24,7 +23,6 @@ import streamlit as st
 
 # SETTING PAGE CONFIG TO WIDE MODE AND ADDING A TITLE AND FAVICON
 st.set_page_config(layout="wide", page_title="NYC Ridesharing Demo", page_icon=":taxi:")
-
 
 # LOAD DATA ONCE
 @st.cache_resource
@@ -37,15 +35,13 @@ def load_data():
         data = pd.read_csv(
             path,
             usecols=["緯度", "経度"],  # 只讀取需要的欄位
-            encoding="utf-8",  # 指定編碼
-            errors='ignore'  # 忽略編碼錯誤
+            encoding="utf-8"  # 指定編碼
         )
         st.write("Data loaded successfully")
         return data
     except Exception as e:
         st.write(f"Error loading data: {e}")
         return pd.DataFrame(columns=["緯度", "経度"])
-
 
 # FUNCTION FOR MAP
 def map(data, lat, lon, zoom):
@@ -73,12 +69,10 @@ def map(data, lat, lon, zoom):
         )
     )
 
-
 # CALCULATE MIDPOINT FOR GIVEN SET OF DATA
 @st.cache_data
 def mpoint(lat, lon):
     return (np.average(lat), np.average(lon))
-
 
 # STREAMLIT APP LAYOUT
 data = load_data()
@@ -97,19 +91,16 @@ if not st.session_state.get("url_synced", False):
     except KeyError:
         pass
 
-
 # IF THE SLIDER CHANGES, UPDATE THE QUERY PARAM
 def update_query_params():
     hour_selected = st.session_state["pickup_hour"]
     st.query_params["pickup_hour"] = hour_selected
-
 
 with row1_1:
     st.title("Public Wireless LAN Data")
     hour_selected = st.slider(
         "Select hour of pickup", 0, 23, key="pickup_hour", on_change=update_query_params
     )
-
 
 with row1_2:
     st.write(
