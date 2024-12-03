@@ -17,7 +17,6 @@
 
 import os
 
-import altair as alt
 import numpy as np
 import pandas as pd
 import pydeck as pdk
@@ -36,10 +35,9 @@ def load_data():
 
     data = pd.read_csv(
         path,
-        names=[
-            "緯度",
-            "経度",
-        ], 
+        names=["緯度", "経度"],
+        encoding="utf-8",  # 指定編碼
+        errors='ignore'  # 忽略編碼錯誤
     )
     return data
 
