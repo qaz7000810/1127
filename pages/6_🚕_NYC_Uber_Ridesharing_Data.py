@@ -22,7 +22,7 @@ import pydeck as pdk
 import streamlit as st
 
 # SETTING PAGE CONFIG TO WIDE MODE AND ADDING A TITLE AND FAVICON
-st.set_page_config(layout="wide", page_title="NYC Ridesharing Demo", page_icon=":taxi:")
+st.set_page_config(layout="wide", page_title="Public Wireless LAN Data", page_icon=":globe_with_meridians:")
 
 # LOAD DATA ONCE
 @st.cache_resource
@@ -77,48 +77,14 @@ def mpoint(lat, lon):
 # STREAMLIT APP LAYOUT
 data = load_data()
 
-# LAYING OUT THE TOP SECTION OF THE APP
-row1_1, row1_2 = st.columns((2, 3))
-
-# SEE IF THERE'S A QUERY PARAM IN THE URL (e.g. ?pickup_hour=2)
-# THIS ALLOWS YOU TO PASS A STATEFUL URL TO SOMEONE WITH A SPECIFIC HOUR SELECTED,
-# E.G. https://share.streamlit.io/streamlit/demo-uber-nyc-pickups/main?pickup_hour=2
-if not st.session_state.get("url_synced", False):
-    try:
-        pickup_hour = int(st.query_params["pickup_hour"])
-        st.session_state["pickup_hour"] = pickup_hour
-        st.session_state["url_synced"] = True
-    except KeyError:
-        pass
-
-# IF THE SLIDER CHANGES, UPDATE THE QUERY PARAM
-def update_query_params():
-    hour_selected = st.session_state["pickup_hour"]
-    st.query_params["pickup_hour"] = hour_selected
-
-with row1_1:
-    st.title("Public Wireless LAN Data")
-    hour_selected = st.slider(
-        "Select hour of pickup", 0, 23, key="pickup_hour", on_change=update_query_params
-    )
-
-with row1_2:
-    st.write(
-        """
-    ##
-    Examining how Public Wireless LAN Data varies over time.
-    By sliding the slider on the left you can view different slices of time and explore different trends.
-    """
-    )
-
-# LAYING OUT THE MIDDLE SECTION OF THE APP WITH THE MAPS
-row2_1 = st.columns((1))
-
 # SETTING THE ZOOM LOCATIONS
 midpoint = mpoint(data["緯度"], data["経度"])
 
-with row2_1:
-    st.write(
-        f"""**Public Wireless LAN Data from {hour_selected}:00 and {(hour_selected + 1) % 24}:00**"""
-    )
-    map(data, midpoint[0], midpoint[1], 11)
+# DISPLAY THE MAP
+st.title("Public Wireless LAN Data")
+st.write(
+    """
+    Examining the geographic distribution of Public Wireless LAN Data.
+    """
+)
+map(data, midpoint[0], midpoint[1], 11)
