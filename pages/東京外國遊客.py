@@ -7,8 +7,7 @@ csv_url = 'https://github.com/qaz7000810/tower/raw/refs/heads/main/%E8%A7%80%E5%
 # 讀取 CSV 文件
 @st.cache_data
 def load_data(url):
-    # 讀取並解碼 CSV 文件
-    data = pd.read_csv(url, encoding='shift_jis')
+    data = pd.read_csv(url)  # 不指定編碼來讀取 CSV 文件
     return data
 
 data = load_data(csv_url)
