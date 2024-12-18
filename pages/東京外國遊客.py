@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # 定義 CSV 文件的 URL
-csv_url = 'https://www.opendata.metro.tokyo.lg.jp/sangyouroudou/behavioral_characteristics_survey/H31R1behavioral_characteristics_survey1.csv'
+csv_url = 'https://github.com/qaz7000810/tower/raw/refs/heads/main/%E8%A7%80%E5%85%89%E5%AE%A2%E6%80%A7%E5%88%A5.csv'
 
 # 讀取 CSV 文件
 @st.cache_data
