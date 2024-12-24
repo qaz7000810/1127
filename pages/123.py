@@ -21,7 +21,7 @@ views = pd.read_csv("https://raw.githubusercontent.com/lztzm/Gis_Final_Project/r
 heat_data = pd.read_csv("https://raw.githubusercontent.com/lztzm/Gis_Final_Project/refs/heads/main/%E5%90%84%E5%8D%80%E6%99%AF%E9%BB%9E%E6%95%B8%E9%87%8F.csv")
 
 # 確保緯度與經度欄位存在
-if '緯度' not in views.columns or '經度' not in views.columns:
+if '緯度' not in views.columns或'經度'不在 views.columns:
     st.error("CSV檔案中缺少緯度或經度欄位！")
 else:
     # 獲取所有的行政區，並添加一個 "全部區域" 選項
@@ -36,7 +36,7 @@ else:
         map_center = [35.68388267239132, 139.77317043877568]  # 東京的中心位置
     else:
         filtered_views = views[views['市町村名'] == selected_district]
-        district_data = heat_data[heat_data['行政區'] == selected_district]
+        district_data = heat_data[heat_data['市町村名'] == selected_district]
         map_center = [district_data['緯度'].mean(), district_data['經度'].mean()]
 
     # 初始化地圖
