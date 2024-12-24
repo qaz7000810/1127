@@ -24,14 +24,17 @@ heat_data = pd.read_csv("https://raw.githubusercontent.com/lztzm/Gis_Final_Proje
 if '緯度' not in views.columns or '經度' not in views.columns:
     st.error("CSV檔案中缺少緯度或經度欄位！")
 else:
-    # 獲取所有的行政區
-    districts = views['市町村名'].unique()
+    # 獲取所有的行政區，並添加一個 "全部區域" 選項
+    districts = ['全部區域'] + views['市町村名'].unique().tolist()
     
     # 添加選擇行政區的 selectbox 到應用程式的主要區域
     selected_district = st.selectbox('選擇行政區', districts)
 
     # 根據選擇的行政區過濾景點資料
-    filtered_views = views[views['市町村名'] == selected_district]
+    if selected_district == '全部區域':
+        filtered_views = views
+    else:
+        filtered_views = views[views['市町村名'] == selected_district]
 
     # 初始化地圖
     m = leafmap.Map(center=[35.68388267239132, 139.77317043877568], zoom=12)
