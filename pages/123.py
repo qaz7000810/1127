@@ -21,7 +21,7 @@ views = pd.read_csv("https://raw.githubusercontent.com/lztzm/Gis_Final_Project/r
 heat_data = pd.read_csv("https://raw.githubusercontent.com/lztzm/Gis_Final_Project/refs/heads/main/%E5%90%84%E5%8D%80%E6%99%AF%E9%BB%9E%E6%95%B8%E9%87%8F.csv")
 
 # 確保緯度與經度欄位存在
-if '緯度' not in views.columns或'經度'不在 views.columns:
+if '緯度' not in views.columns or '經度' not in views.columns:
     st.error("CSV檔案中缺少緯度或經度欄位！")
 else:
     # 獲取所有的行政區，並添加一個 "全部區域" 選項
