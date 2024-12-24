@@ -27,14 +27,11 @@ else:
     # 獲取所有的行政區
     districts = views['市町村名'].unique()
     
-    # 添加選擇行政區的 selectbox
-    selected_district = st.sidebar.selectbox('選擇行政區', districts)
+    # 添加選擇行政區的 selectbox 到應用程式的主要區域
+    selected_district = st.selectbox('選擇行政區', districts)
 
     # 根據選擇的行政區過濾景點資料
-    if selected_district:
-        filtered_views = views[views['市町村名'] == selected_district]
-    else:
-        filtered_views = views
+    filtered_views = views[views['市町村名'] == selected_district]
 
     # 初始化地圖
     m = leafmap.Map(center=[35.68388267239132, 139.77317043877568], zoom=12)
