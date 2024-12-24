@@ -33,11 +33,14 @@ else:
     # 根據選擇的行政區過濾景點資料
     if selected_district == '全部區域':
         filtered_views = views
+        map_center = [35.68388267239132, 139.77317043877568]  # 東京的中心位置
     else:
         filtered_views = views[views['市町村名'] == selected_district]
+        district_data = heat_data[heat_data['行政區'] == selected_district]
+        map_center = [district_data['緯度'].mean(), district_data['經度'].mean()]
 
     # 初始化地圖
-    m = leafmap.Map(center=[35.68388267239132, 139.77317043877568], zoom=12)
+    m = leafmap.Map(center=map_center, zoom=12)
 
     # 添加點標記
     m.add_points_from_xy(
