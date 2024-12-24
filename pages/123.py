@@ -29,9 +29,12 @@ else:
     
     # 添加選擇行政區的 selectbox
     selected_district = st.sidebar.selectbox('選擇行政區', districts)
-    
+
     # 根據選擇的行政區過濾景點資料
-    filtered_views = views[views['市町村名'] == selected_district]
+    if selected_district:
+        filtered_views = views[views['市町村名'] == selected_district]
+    else:
+        filtered_views = views
 
     # 初始化地圖
     m = leafmap.Map(center=[35.68388267239132, 139.77317043877568], zoom=12)
@@ -46,7 +49,6 @@ else:
     )
 
     # 添加熱區地圖
-    heatmap_layer = leafmap.folium.FeatureGroup(name="熱區地圖")
     m.add_heatmap(
         heat_data,
         latitude="緯度",
